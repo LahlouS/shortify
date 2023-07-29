@@ -1,0 +1,4 @@
+__pycache__
+voskModel/
+*.pcl
+foreign_speech_recognition-main/
