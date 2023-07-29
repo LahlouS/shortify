@@ -4,6 +4,8 @@ import ytScript
 import cutVideo
 
 # speechRecognition
+
+from voskDriver import VoskDriver
 import os
 import sys
 import time
@@ -23,14 +25,16 @@ from punctuator import Punctuator
 
 import ffmpeg
 
-
+if len(sys.argv) != 3:
+    print('ERROR: wrong args:\n>> python [basename] [url]')
+    sys.exit()
 SetLogLevel(0)
 
-url = 'https://www.youtube.com/watch?v=ofeg1P0yHUQ&pp=ygUPd29sZnJhbSBwaHlzaWNz'
+url = sys.argv[2]
 
 outpath = 'video/'
 path = 'input/'
-base_filename = 'trump'
+base_filename = sys.argv[1]
 
 video_filename = path + base_filename
 audio_filename = path + base_filename
@@ -45,105 +49,7 @@ ytScript.dl_video_audio(url, base_filename)
 
 model_path = "voskModel/vosk-model-en-us-0.22"
 
-# if not os.path.exists(audio_filename):
-#     print(f"ERROR: File '{audio_filename}' doesn't exist . . .")
-#     sys.exit()
-
-# print(f"Reading your file '{audio_filename}'...")
-
-# # reading audio file using wave module
-# wf = wave.open(audio_filename, "rb")
-# print(f"'{audio_filename} was successfully read'")
-
-# # check if audio is mono wav
-# if wf.getnchannels() != 1 or wf.getsampwidth() != 2 or wf.getcomptype() != "NONE":
-#     print("ERROR: Audio file must be WAV format mono PCM.")
-#     sys.exit()
-
-# # READING THE MODEL
-
-# if not os.path.exists(model_path):
-#     print(f'ERROR: path to vosk model is not valid !')
-#     sys.exit()
-
-# print(f'reading vosk model \'{model_path}\'...')
-# model = Model(model_path)
-# rec = KaldiRecognizer(model, wf.getframerate())
-# rec.SetWords(True)
-
-# print('Start converting to text. It may take some time...')
-# start_time = time.time()
-
-# results = []
-
-# while True:
-#     data = wf.readframes(4000)
-#     if len(data) == 0:
-#         break
-#     if rec.AcceptWaveform(data):
-#         part_result = json.loads(rec.Result())
-#         results.append(part_result)
-
-# part_result = json.loads(rec.FinalResult())
-# results.append(part_result)
-
-# # RESULT IS OF TYPE:
-# # [
-# # {'result': [
-#                 # {'conf': 1.0, 'end': 1.92, 'start': 1.5, 'word': 'some'},
-#                 # {'conf': 1.0, 'end': 2.37, 'start': 1.92, 'word': 'speech'},
-#                 # {'conf': 1.0, 'end': 3.09, 'start': 2.37, 'word': 'recognition'},
-#                 #  . . .
-# #             ],
-# # 'text': "the text contained in the wf.readframes(4000) (see l.46)"
-# # },
-#     # . . . 
-# # ]
-
-# # 'conf' equals the rate of confident regarding the word
-# # 'end' 'start' are the timeStamp
-# # 'word' is the word we talk about
-
-# # forming a final string from the words
-# text = ''
-# for r in results:
-#     text += r['text'] + ' '
-
-# time_elapsed = time.strftime(
-#     '%H:%M:%S', time.gmtime(time.time() - start_time))
-# print(f'Done! Elapsed time = {time_elapsed}')
-
-# print("\tOUTPUT STRING:\n")
-# print(text)
-
-# print(f"Saving text to '{text_filename}'...")
-# with open(text_filename, "w") as text_file:
-#     text_file.write(text)
-# print(f"Text successfully saved")
-
-# print(f"Saving timstamp text to timestamp.'{text_filename}'...")
-# list_of_words = []
-# for sentence in results:
-#     if len(sentence) == 1:
-#         # sometimes there are bugs in recognition 
-#         # and it returns an empty dictionary
-#         # {'text': ''}
-#         continue
-#     for obj in sentence['result']:
-#         w = Word(obj)  # create custom Word object
-#         list_of_words.append(w)  # and add it to list
-
-# with open(timestamp_filename, "a") as TimeStampFile:
-#     TimeStampFile.write(f'\n\n########## {timestamp_filename} ###############\n\n')
-#     for word in list_of_words:
-#         TimeStampFile.write(word.to_string() + '\n')
-#     TimeStampFile.write('\n\n########## EOF ###############\n\n')
-#         # print(word.to_string())
-
-
-# # NOW PROCESSING THE STRING WITH TEXT RANK
-
-from voskDriver import VoskDriver
+######### TEXT RECOGNITION ############ 
 
 vd = VoskDriver(audio_filename + audio_ext, model_path)
 
