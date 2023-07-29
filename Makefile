@@ -14,7 +14,8 @@ logclean:
 	rm audioTranslate/*
 
 fclean: 
-	rm audioTranslate/*
+	rm -rf input/*
+	rm -rf audioTranslate/*
 	rm -r video/*
 
 .PHONY: clean fclean logclean run env
